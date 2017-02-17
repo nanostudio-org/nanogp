@@ -34,15 +34,15 @@ Settings are defined in `admin/config.php`:
   
 Create and configure a new projet.  
   
-1. Open page: https://console.developers.google.com  
+1) Open page: https://console.developers.google.com  
   
-2. Create a new project named `nanogallery2gp`  
+2) Create a new project named `nanogallery2gp`  
   
 <img src="img/google_api_console1.jpg?raw=true" alt="step 1" style="max-width:400px;"/>
   
 <img src="img/google_api_console2.jpg?raw=true" alt="step 2" style="max-width:400px;"/>
   
-3. Create a consent screen  
+3) Create a consent screen  
   
 Select your email address  
   
@@ -52,7 +52,7 @@ Others fields are optional
   
 <img src="img/google_api_console3.jpg?raw=true" alt="step 3" style="max-width:400px;"/>
   
-4. Create a `credential` kind `OAuth Client ID`  
+4) Create a `credential` kind `OAuth Client ID`  
     
 <img src="img/google_api_console4.jpg?raw=true" alt="step 4" style="max-width:400px;"/>
   
