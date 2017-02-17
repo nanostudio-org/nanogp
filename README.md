@@ -52,7 +52,7 @@ Others fields are optional
   
 <img src="img/google_api_console3.jpg?raw=true" alt="step 3" style="max-width:400px;"/>
   
-4) Create a `credential` kind `OAuth Client ID`  
+4) Create `credentials` kind `OAuth Client ID`  
     
 <img src="img/google_api_console4.jpg?raw=true" alt="step 4" style="max-width:400px;"/>
   
