@@ -53,12 +53,12 @@ Others fields are optional
 <img src="img/google_api_console3.jpg?raw=true" alt="step 3" style="max-width:400px;"/>
   
 4. Create a `credential` kind `OAuth Client ID`  
+    
+<img src="img/google_api_console4.jpg?raw=true" alt="step 4" style="max-width:400px;"/>
   
 Application type: "Web application"  
 Name: "nanogallery2gp"  
-  
-<img src="img/google_api_console4.jpg?raw=true" alt="step 4" style="max-width:400px;"/>
-  
+
 Define the authorized redirect URLs: enter the full path to your `autorize.php`  
   
 <img src="img/google_api_console5.jpg?raw=true" alt="step 5" style="max-width:400px;"/>
