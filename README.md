@@ -72,3 +72,6 @@ And you get your personal and confidential `Client ID` and `client secret`
 
 The `admin` folder should only be accessible to your PHP applications.  
 
+  
+## OAuth2
+More about OAuth2: https://developers.google.com/identity/protocols/OAuth2WebServer
