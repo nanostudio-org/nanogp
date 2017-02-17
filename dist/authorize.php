@@ -33,7 +33,7 @@
       $atoken=file_get_contents( $folder . '/token_a.txt');
       $rtoken=file_get_contents( $folder . '/token_r.txt');
       // $user_id=file_get_contents('user. txt');
-      $user_id = $folder;
+      $user_id = basename($folder);
       if( $atoken !== false && $atoken != '' && $rtoken !== false && $rtoken != '' && $user_id != '' ) {
         display_settings();
         exit;

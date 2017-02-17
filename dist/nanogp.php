@@ -23,11 +23,19 @@
   $request=$_GET;
   $user_id=$request['nguserid'];
   unset($request['nguserid']);
-  $album_id=$request['ngalbumid'];
-  unset($request['ngalbumid']);
-  $callback=$request['callback'];
-  unset($request['callback']);
-  unset($request['_']);
+  $album_id='';
+  if( isset($_GET['ngalbumid']) ) {
+    $album_id=$request['ngalbumid'];
+    unset($request['ngalbumid']);
+  }
+  $callback='';
+  if( isset($_GET['callback']) ) {
+    $callback=$request['callback'];
+    unset($request['callback']);
+  }
+  if( isset($_GET['_']) ) {
+    unset($request['_']);
+  }
   $content_kind=$request['kind'];
 
   
@@ -113,7 +121,7 @@
 
   // ##### refresh the access token
   function get_new_access_token(){
-    global  $user_id, $cfg_client_secret, $cfg_client_id, $rtoken, $atoken;
+    global  $user_id, $cfg_client_secret, $cfg_client_id, $rtoken, $atoken, $callback;
   
     $rtoken=file_get_contents('admin/users/' .$user_id. '/token_r.txt');
     if( $rtoken === false || $rtoken == '' ) {
