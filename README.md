@@ -32,6 +32,7 @@ Create and configure a new projet.
 1. Open page: https://console.developers.google.com
 2. Create a new project named `nanogallery2gp`
 <img src="img/google_api_console1.jpg?raw=true" alt="step 1" style="max-width:400px;"/>
+  
 <img src="img/google_api_console2.jpg?raw=true" alt="step 2" style="max-width:400px;"/>
 
 3. Create a consent screen
@@ -39,11 +40,13 @@ Select your email address
 Define the "product namaeshown to user": "nanogallery2gp"
 Others fields are optional
 <img src="img/google_api_console3.jpg?raw=true" alt="step 3" style="max-width:400px;"/>
-
+  
 4. Create a `credential` kind `OAuth Client ID`
- Application type: "Web application"
- Name: "nanogallery2gp"
+Application type: "Web application"
+Name: "nanogallery2gp"
 <img src="img/google_api_console4.jpg?raw=true" alt="step 4" style="max-width:400px;"/>
+  
+Define the authorized redirect URLs: enter the full path to your `autorize.php`
 <img src="img/google_api_console5.jpg?raw=true" alt="step 5" style="max-width:400px;"/>
 
 And you get your personal and confidential `Client ID` and `client secret`
