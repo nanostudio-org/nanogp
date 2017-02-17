@@ -1,6 +1,6 @@
 # nanogp
 
-Access Google Photos from nanogallery2.
+Access Google Photos from <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b>.
 
 Since february 9, 2017, Google Photos can no more be accessed without account owner's explicit authorization.
 Permanent authorization is only possible for server side applications.
