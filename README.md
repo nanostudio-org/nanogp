@@ -1,11 +1,11 @@
 # nanogp
 
-Access Google Photos from <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b>.
+access Google Photos from <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b>.
 
 Since february 9, 2017, Google Photos can no more be accessed without account owner's explicit authorization.
 Permanent authorization is only possible for server side applications.
 
-nanoGP is a PHP application which delivers Google Photos content to nanogallery2 on your web pages.
+<b>nanogp</b> is a PHP application which delivers Google Photos content to nanogallery2 on your web pages.
 
 
 ## Pre-requisites:
