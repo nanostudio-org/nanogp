@@ -72,8 +72,8 @@ And you get your personal and confidential `Client ID` and `client secret`
 
 Once the settings are defined, you need to grant authorization to your Google Photos account.  
 Use a browser to open the `authorize.php` page.  
-```http://your_webserver/nanogp/authorize.php```
-
+`http://your_webserver/nanogp/authorize.php`  
+  
 (if you want to grant authorization again, clear the folder `nanogp/admin/users` before).
 
 ## Security  
