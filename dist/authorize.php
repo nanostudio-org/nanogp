@@ -4,7 +4,7 @@
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.0.0
+* @version    1.1.0
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
@@ -14,7 +14,21 @@
 */
 
 
+// Google OAUTH 2.0 API: https://developers.google.com/identity/protocols/OpenIDConnect
+
+ini_set('display_errors', 1);
+
+  const API_BASE_PATH =       'https://www.googleapis.com';
+  const OAUTH2_TOKEN_URI =    'https://www.googleapis.com/oauth2/v4/token';
+  const OAUTH2_AUTH_URL =     'https://accounts.google.com/o/oauth2/auth';
+  const OAUTH2_REVOKE_URI =   'https://accounts.google.com/o/oauth2/revoke';
+  $user_id = '';
+  $atoken = '';
+  $rtoken = '';
+  $callback = '';
+  
   include('admin/config.php');
+  include('admin/tools.php');
 
   if( !function_exists('curl_version') ) {
     echo 'Please install/enable CURL to execute this application.';
@@ -26,7 +40,7 @@
     $prot='https://';
   }
 
-  if( $cfg_max_accounts == 1 ) {
+  if( count($_GET) == 0 && $cfg_max_accounts == 1 ) {
     foreach( glob( 'admin/users/*', GLOB_ONLYDIR ) as $folder) 
     {	
       // echo "Filename: " . $folder . "<br />";	
@@ -43,11 +57,28 @@
   }
   
 
+  // ##########
+  // STEP 1: user must grant authorization
+  if( count($_GET) == 0 ) {
+
+    $params = array(
+      "response_type" =>  "code",
+      "client_id" =>      $cfg_client_id,
+      "redirect_uri" =>   $prot . $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"],
+      "access_type" =>    "offline",
+      "scope" =>          "https://picasaweb.google.com/data"
+    );
+
+    $request_to = OAUTH2_AUTH_URL . '?' . http_build_query($params);
+
+    header("Location: " . $request_to);     // display authorization form
+  }
+
+  
+  // ##########
+  // STEP 2: get access token and refresh token
   if (isset($_GET['code'])) {
-    // second step: get access token and refresh token
-    
     $code = $_GET['code'];
-    $url = 'https://www.googleapis.com/oauth2/v4/token';
     $params = array(
         "code" =>           $code,
         "client_id" =>      $cfg_client_id,
@@ -57,7 +88,7 @@
     );
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_URL, OAUTH2_TOKEN_URI );
     curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -73,7 +104,7 @@
     if( $info['http_code'] === 200 ) {
       // ok
       
-      header('Content-Type: ' . $info['content_type']);
+      // header('Content-Type: ' . $info['content_type']);
       
       // retrieve user ID
       $ch = curl_init();
@@ -97,34 +128,118 @@
 
         file_put_contents( 'admin/users/' . $user_id . '/token_a.txt', $authObj->access_token);
         file_put_contents( 'admin/users/' . $user_id . '/token_r.txt', $authObj->refresh_token);
-        echo 'Authorisation successfully granted.' . PHP_EOL . '<br/>';
-        display_settings();
+        // echo 'Authorisation successfully granted.' . PHP_EOL . '<br/>';
+        response_json( array('nano_status' => 'ok', 'nano_message' => 'Authorisation successfully granted.' ) );
+        // display_settings();
       }
       else {
-        echo 'Authorization already granted. To grant again, please revoke application <b>' .$cfg_application_name.'</b> permissions: https://myaccount.google.com/permissions ';
+        response_json( array('nano_status' => 'warning', 'nano_message' => 'Authorization already granted.' ) );
       }
     }
     else {
-      echo 'curl error:' . $ce . PHP_EOL . '<br/>';
+      response_json( array('nano_status' => 'error', 'nano_message' => 'curl error:' . $ce ) );
+    }
+  } 
+
+
+  
+  
+  // ##########
+  // REVOKE USER AUTHORIZATION
+  if (isset($_GET['revoke'])) {
+    // can be done manually by the user: https://security.google.com/settings/security/permissions
+    // but here we can clear also the users data
+    $user_id = $_GET['revoke'];
+    
+    if( $user_id == '' ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'missing user ID') );
+      exit;
     }
     
+    if( !is_dir( 'admin/users/' . $user_id ) ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'user ID does not exist') );
+      exit;
+    }
+
+    $atoken=file_get_contents( 'admin/users/' . $user_id . '/token_a.txt');
+    if( $atoken === false || $atoken == '' ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find access token') );
+      exit;
+    }
     
-  } else {
-    // first step: user must grant authorization
-    $url = "https://accounts.google.com/o/oauth2/auth";
+    if( revoke( $user_id ) === 'token_expired') {
+      // error -> get a new access token
+      get_new_access_token();
+      // send request again, with the new access token
+      revoke( $user_id );
+    }
+    
 
-    $params = array(
-      "response_type" =>  "code",
-      "client_id" =>      $cfg_client_id,
-      "redirect_uri" =>   $prot . $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"],
-      "access_type" =>    "offline",
-      "scope" =>          "https://picasaweb.google.com/data"
-    );
-
-    $request_to = $url . '?' . http_build_query($params);
-
-    header("Location: " . $request_to);     // display authorization form
   }
+  
+  function revoke( $user_id ) {
+    global $atoken;
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, OAUTH2_REVOKE_URI . '?token=' .$atoken );
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
+    $response = curl_exec($ch);
+    $info = curl_getinfo($ch);
+    $ce = curl_error($ch);
+    curl_close($ch);
+
+    if( $info['http_code'] === 403 ) {
+      // token expired?
+      return 'token_expired';
+    }
+    
+    if( $info['http_code'] === 200) {
+      array_map('unlink', glob('admin/users/' . $user_id . "/*.*"));
+      rmdir('admin/users/' . $user_id);
+      response_json( array('nano_status' => 'ok', 'nano_message' => 'authorisation revoked successfully') );
+      exit;
+    } 
+    
+    response_json( array('nano_status' => 'error', 'nano_message' => 'Error : '. $info['http_code'] . '-' . $ce ) );
+  }
+  
+
+  // ##########
+  // CHECK IF ACCESS ALREADY GRANTED
+  if (isset($_GET['user_info'])) {
+    $user_id = $_GET['user_info'];
+
+    if( $user_id == '' ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'missing user ID') );
+      exit;
+    }
+
+    if( !is_dir( 'admin/users/' . $user_id ) ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'user ID does not exist') );
+      exit;
+    }
+
+    $atoken=file_get_contents( 'admin/users/' . $user_id . '/token_a.txt');
+    if( $atoken === false || $atoken == '' ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find access token') );
+      exit;
+    }    
+    
+    $rtoken=file_get_contents( 'admin/users/' . $user_id . '/token_r.txt');
+    if( $rtoken === false || $rtoken == '' ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find refresh token') );
+      exit;
+    }    
+    
+    response_json( array('nano_status' => 'ok', 'nano_message' => 'authorization already granted') );
+  }
+
+
+
+  
   
   function display_settings() {
     global $user_id, $prot;
