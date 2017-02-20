@@ -16,8 +16,6 @@
 
 // Google OAUTH 2.0 API: https://developers.google.com/identity/protocols/OpenIDConnect
 
-ini_set('display_errors', 1);
-
   const API_BASE_PATH =       'https://www.googleapis.com';
   const OAUTH2_TOKEN_URI =    'https://www.googleapis.com/oauth2/v4/token';
   const OAUTH2_AUTH_URL =     'https://accounts.google.com/o/oauth2/auth';
