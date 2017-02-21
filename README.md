@@ -78,6 +78,7 @@ Use a browser to open the `authorize.php` page: `http://your_webserver/nanogp/au
 ## Security  
 
 The `admin` folder should only be accessible to your PHP applications.  
+For example, with `deny from all` set in `.htaccess` file.
 
   
 ## OAuth2
