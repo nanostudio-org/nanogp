@@ -9,7 +9,8 @@ Permanent authorization is only possible for server side applications.
 
 
 ## Pre-requisites:
-Web server with PHP version > 5.2
+Web server with PHP version > 5.2  
+Cannot be run on `localhost` (workaround, use `http://lvh.me` instead)  
 
 
 ## Installation  
