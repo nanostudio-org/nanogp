@@ -4,7 +4,7 @@
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.1.0
+* @version    1.2.0
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
@@ -38,7 +38,8 @@
     $prot='https://';
   }
 
-  if( count($_GET) == 0 && $cfg_max_accounts == 1 ) {
+  // if( count($_GET) == 0 && $cfg_max_accounts == 1  ) {
+  if( !isset($_GET['code']) && !isset($_GET['revoke']) && !isset($_GET['user_info']) && $cfg_max_accounts == 1  ) {
     foreach( glob( 'admin/users/*', GLOB_ONLYDIR ) as $folder) 
     {	
       // echo "Filename: " . $folder . "<br />";	
@@ -57,14 +58,14 @@
 
   // ##########
   // STEP 1: user must grant authorization
-  if( count($_GET) == 0 ) {
+  if( !isset($_GET['code']) && !isset($_GET['revoke']) && !isset($_GET['user_info']) ) {
 
     $params = array(
       "response_type" =>  "code",
       "client_id" =>      $cfg_client_id,
       "redirect_uri" =>   $prot . $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"],
       "access_type" =>    "offline",
-      "scope" =>          "https://picasaweb.google.com/data"
+      "scope" =>          "https://picasaweb.google.com/data profile email"
     );
 
     $request_to = OAUTH2_AUTH_URL . '?' . http_build_query($params);
@@ -75,7 +76,7 @@
   
   // ##########
   // STEP 2: get access token and refresh token
-  if (isset($_GET['code'])) {
+  if( isset($_GET['code']) ) {
     $code = $_GET['code'];
     $params = array(
         "code" =>           $code,
@@ -106,36 +107,63 @@
       
       // retrieve user ID
       $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, 'https://picasaweb.google.com/data/feed/api/user/default?access_token=' . $authObj->access_token );
+      // curl_setopt($ch, CURLOPT_URL, 'https://picasaweb.google.com/data/feed/api/user/default?access_token=' . $authObj->access_token );
+      curl_setopt($ch, CURLOPT_URL, 'https://www.googleapis.com/oauth2/v2/userinfo?access_token=' . $authObj->access_token );
       curl_setopt($ch, CURLOPT_HEADER, false);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array("GData-Version: 3"));
+      // curl_setopt($ch, CURLOPT_HTTPHEADER, array("GData-Version: 3"));
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
       curl_setopt($ch, CURLOPT_VERBOSE, true);
       $response = curl_exec($ch);
+      //var_dump($response);
+      $info = curl_getinfo($ch);
+      $ce = curl_error($ch);
       curl_close($ch);
-      $obj = simplexml_load_string($response);
       
-      $user_id = $obj -> title;
-  
-      // check if retrieved user ID matches with the user ID defined in the config file
-      if(  property_exists( $authObj, 'refresh_token' ) ) {
-        if( !is_dir( 'admin/users/' . $user_id ) ){
-          mkdir( 'admin/users/' . $user_id );
-        }
+      if( $info['http_code'] === 200 ) {
+        $objProfile = json_decode($response);
+        if(  property_exists( $objProfile, 'id' ) ) {
+          // we got the user ID
+          $user_id = $objProfile -> id;
+          
+          if(  property_exists( $authObj, 'refresh_token' ) ) {
+            // refresh token present -> first authorization grant
+            if( !is_dir( 'admin/users/' . $user_id ) ){
+              if( @mkdir( 'admin/users/' . $user_id ) === false ) {
+                $error = error_get_last();
+                response_json( array('nano_status' => 'error', 'nano_message' => 'error on mkdir(admin/users/' . $user_id .'):' . $error['message'] ) );
+                exit;
+              }
+            }
 
-        file_put_contents( 'admin/users/' . $user_id . '/token_a.txt', $authObj->access_token);
-        file_put_contents( 'admin/users/' . $user_id . '/token_r.txt', $authObj->refresh_token);
-        // echo 'Authorisation successfully granted.' . PHP_EOL . '<br/>';
-        response_json( array('nano_status' => 'ok', 'nano_message' => 'Authorisation successfully granted.' ) );
-        // display_settings();
+            file_put_contents( 'admin/users/' . $user_id . '/token_a.txt', $authObj->access_token);
+            file_put_contents( 'admin/users/' . $user_id . '/token_r.txt', $authObj->refresh_token);
+            if(  property_exists( $objProfile, 'email' ) ) {
+              file_put_contents( 'admin/users/' . $user_id . '/profile.txt', $objProfile->email);
+            }
+            
+            // echo 'Authorisation successfully granted.' . PHP_EOL . '<br/>';
+            response_json( array('nano_status' => 'ok', 'nano_message' => 'Authorisation successfully granted.' ) );
+            // display_settings();
+          }
+          else {
+            // no refresh token -> authorization has already been granted -> revoke to get a new refresh token
+            response_json( array('nano_status' => 'warning', 'nano_message' => 'Authorization already granted. To revoke authorization: https://myaccount.google.com/permissions' ) );
+          }
+        }
+        else {
+          response_json( array('nano_status' => 'error', 'nano_message' => 'Could not retrieve the user profile. Curl error:' . $ce ) );
+          exit;
+        }
       }
       else {
-        response_json( array('nano_status' => 'warning', 'nano_message' => 'Authorization already granted.' ) );
+        response_json( array('nano_status' => 'error', 'nano_message' => 'Could not retrieve the user ID.' ) );
+        exit;
       }
+  
     }
     else {
-      response_json( array('nano_status' => 'error', 'nano_message' => 'curl error:' . $ce ) );
+      response_json( array('nano_status' => 'error', 'nano_message' => 'Could not grant authorization. Curl error:' . $ce ) );
     }
   } 
 
@@ -144,7 +172,7 @@
   
   // ##########
   // REVOKE USER AUTHORIZATION
-  if (isset($_GET['revoke'])) {
+  if( isset($_GET['revoke']) ) {
     // can be done manually by the user: https://security.google.com/settings/security/permissions
     // but here we can clear also the users data
     $user_id = $_GET['revoke'];
@@ -207,7 +235,7 @@
 
   // ##########
   // CHECK IF ACCESS ALREADY GRANTED
-  if (isset($_GET['user_info'])) {
+  if( isset($_GET['user_info']) ) {
     $user_id = $_GET['user_info'];
 
     if( $user_id == '' ) {
@@ -255,5 +283,6 @@
     $u= implode('/', $ul) . '/nanogp.php';    
     echo "  google2URL : '" . $u . "'" . PHP_EOL . "<br/>";
   }
+  
 
 ?>
