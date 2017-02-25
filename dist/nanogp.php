@@ -20,6 +20,8 @@
   set_globals();
   
   $request=$_GET;
+// echo implode($request);
+
   $user_id=$request['nguserid'];
   unset($request['nguserid']);
   $album_id='';
@@ -33,7 +35,7 @@
   if( isset($_GET['_']) ) {
     unset($request['_']);
   }
-  
+
   $content_kind=$request['kind'];
 
   
@@ -47,13 +49,15 @@
     response_json( array('nano_status' => 'error', 'nano_message' => 'Missing access token. Please grant authorization.' ) );
     exit;
   }
-
+  
   // new query parameters
   $nq = http_build_query($request);
 
+  
+  
   // ##### retrieve the list of albums
   if( $content_kind == 'album' ) {
-    $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id . '?' . $nq;
+    $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id . '?access_token=' . $atoken . '&' . $nq;
     // echo $url . PHP_EOL . '<br/>';    
 
     if( send_gprequest( $url ) === 'token_expired') {
@@ -66,7 +70,7 @@
   
   // ##### retrieve the content of one album
   if( $content_kind == 'photo' ) {
-    $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id . '/albumid/' . $album_id . '?' . $nq;
+    $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id . '/albumid/' . $album_id . '?access_token=' . $atoken . '&' . $nq;
 
     if( send_gprequest( $url ) === 'token_expired') {
       // error -> get a new access token
@@ -91,7 +95,12 @@
     $msg=curl_error($ch);
     $info = curl_getinfo($ch);
     curl_close($ch);
-    
+ 
+    if( $response == 'No album found.' ) {
+      response_json( array('nano_status' => 'error', 'nano_message' => 'No album found - ' . $url ) );
+      exit;
+    }
+ 
     if( $info['http_code'] === 403 ) {
       return 'token_expired';
     }
