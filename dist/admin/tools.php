@@ -5,17 +5,16 @@
     global $callback;
 
     if( isset($_GET['callback']) ) {
-      // $callback=$request['callback'];
       $callback=$_GET['callback'];
     }
-    
   }
 
-  
   // ##### send JSON response
   function response_json ( $msg_array ) {
     global $callback;
-    
+ 
+ 
+ 
     if( $callback != '' ) {
       // JSONP
       header('Content-Type: application/javascript; charset=utf-8');
@@ -31,6 +30,7 @@
     write_log( $output );
 
   }
+
   
   
   
@@ -92,7 +92,6 @@
       file_put_contents( 'admin/log.txt', $time . ' ' . $msg . "\r\n", FILE_APPEND );
     }
   }
-
-
+  
 
 ?>
