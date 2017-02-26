@@ -4,7 +4,7 @@
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.2.0
+* @version    1.2.1
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
@@ -65,7 +65,8 @@
       "client_id" =>      $cfg_client_id,
       "redirect_uri" =>   $prot . $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"],
       "access_type" =>    "offline",
-      "scope" =>          "https://picasaweb.google.com/data profile email"
+      "scope" =>          "https://picasaweb.google.com/data profile"
+      // "scope" =>          "https://picasaweb.google.com/data profile email"
     );
 
     $request_to = OAUTH2_AUTH_URL . '?' . http_build_query($params);

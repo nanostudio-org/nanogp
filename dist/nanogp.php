@@ -86,7 +86,7 @@
   function send_gprequest( $url ) {
     global $callback, $atoken, $request;
 
-    $request->access_token=$atoken;
+    $request['access_token']=$atoken;
     
     $ch = curl_init();
     // curl_setopt($ch, CURLOPT_URL, $url . urlencode('&access_token=' . $atoken) );
