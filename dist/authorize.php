@@ -14,12 +14,12 @@
 */
 
 
-// Google OAUTH 2.0 API: https://developers.google.com/identity/protocols/OpenIDConnect
 
   const API_BASE_PATH =       'https://www.googleapis.com';
   const OAUTH2_TOKEN_URI =    'https://www.googleapis.com/oauth2/v4/token';
   const OAUTH2_AUTH_URL =     'https://accounts.google.com/o/oauth2/auth';
   const OAUTH2_REVOKE_URI =   'https://accounts.google.com/o/oauth2/revoke';
+  // Google OAUTH 2.0 API: https://developers.google.com/identity/protocols/OpenIDConnect
   $user_id = '';
   $atoken = '';
   $rtoken = '';
@@ -106,8 +106,6 @@
     if( $info['http_code'] === 200 ) {
       // ok
       
-      // header('Content-Type: ' . $info['content_type']);
-      
       // retrieve user ID
       $ch = curl_init();
       // curl_setopt($ch, CURLOPT_URL, 'https://picasaweb.google.com/data/feed/api/user/default?access_token=' . $authObj->access_token );
@@ -130,7 +128,8 @@
           $user_id = $objProfile -> id;
           
           if(  property_exists( $authObj, 'refresh_token' ) ) {
-            // refresh token present -> first authorization grant
+            // refresh token present -> ok, it's the first authorization grant
+            // store tokens
             if( !is_dir( 'admin/users/' . $user_id ) ){
               if( @mkdir( 'admin/users/' . $user_id ) === false ) {
                 $error = error_get_last();
@@ -147,7 +146,6 @@
             
             // echo 'Authorisation successfully granted.' . PHP_EOL . '<br/>';
             response_json( array('nano_status' => 'ok', 'nano_message' => 'Authorisation successfully granted.' ) );
-            // display_settings();
           }
           else {
             // no refresh token -> authorization has already been granted -> revoke to get a new refresh token
@@ -176,7 +174,7 @@
   // ##########
   // REVOKE USER AUTHORIZATION
   if( isset($_GET['revoke']) ) {
-    // can be done manually by the user: https://security.google.com/settings/security/permissions
+    // can be done manually by the user: https://security.google.com/settings/security/permissions (in this case the user folder remains and must be deleted manually in the admin/users folder)
     // but here we can clear also the users data
     $user_id = $_GET['revoke'];
     
@@ -192,7 +190,7 @@
 
     $atoken=file_get_contents( 'admin/users/' . $user_id . '/token_a.txt');
     if( $atoken === false || $atoken == '' ) {
-      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find access token') );
+      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find any access token') );
       exit;
     }
     
@@ -233,6 +231,7 @@
     } 
     
     response_json( array('nano_status' => 'error', 'nano_message' => 'Error : '. $info['http_code'] . '-' . $ce ) );
+    exit;
   }
   
 
@@ -247,7 +246,7 @@
     }
 
     if( !is_dir( 'admin/users/' . $user_id ) ) {
-      response_json( array('nano_status' => 'error', 'nano_message' => 'user ID does not exist') );
+      response_json( array('nano_status' => 'error', 'nano_message' => 'user '. $user_id .' does not exist') );
       exit;
     }
 
@@ -266,10 +265,10 @@
     response_json( array('nano_status' => 'ok', 'nano_message' => 'authorization already granted') );
   }
 
-
-
   
   
+  // ##########
+  // Display connection info for nanogallery2 
   function display_settings() {
     global $user_id, $prot;
     

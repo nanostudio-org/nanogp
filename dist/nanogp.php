@@ -20,7 +20,7 @@
   set_globals();
   
   $request=$_GET;
-// echo implode($request);
+  // echo implode($request);
 
   $user_id=$request['nguserid'];
   unset($request['nguserid']);
@@ -71,7 +71,6 @@
   
   // ##### retrieve the content of one album
   if( $content_kind == 'photo' ) {
-    // $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id . '/albumid/' . $album_id . '?access_token=' . $atoken . '&' . $nq;
     $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id . '/albumid/' . $album_id;
 
     if( send_gprequest( $url ) === 'token_expired') {
@@ -82,6 +81,7 @@
     }
   }
   
+  
   // ##### send the request to picasa/google photos
   function send_gprequest( $url ) {
     global $callback, $atoken, $request;
@@ -89,7 +89,6 @@
     $request['access_token']=$atoken;
     
     $ch = curl_init();
-    // curl_setopt($ch, CURLOPT_URL, $url . urlencode('&access_token=' . $atoken) );
     $url = $url . '?' . http_build_query($request);
     curl_setopt($ch, CURLOPT_URL, $url );
     curl_setopt($ch, CURLOPT_HEADER, false);
