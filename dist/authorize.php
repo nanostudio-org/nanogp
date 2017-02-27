@@ -4,7 +4,7 @@
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.2.2
+* @version    1.2.3
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
@@ -28,11 +28,18 @@
   include('admin/config.php');
   include('admin/tools.php');
 
+  // check CURL installation
   if( !function_exists('curl_version') ) {
-    echo 'Please install/enable CURL to execute this application.';
+    response_json( array('nano_status' => 'error', 'nano_message' => 'Please install/enable CURL to execute this application.' ) );
     exit;
   }
-
+  
+  // check write permissions
+  if( !is_writable('admin/users') ) {
+    response_json( array('nano_status' => 'error', 'nano_message' => 'Error: no write permissions to folder admin/users.' ) );
+    exit;
+  }
+  
   $prot='http://';
   if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'){
     $prot='https://';
@@ -126,6 +133,11 @@
         if(  property_exists( $objProfile, 'id' ) ) {
           // we got the user ID
           $user_id = $objProfile -> id;
+          
+          if( $user_id = '' ) {
+            response_json( array('nano_status' => 'error', 'nano_message' => 'Retrieved user ID is empty.' ) );
+            exit;
+          }
           
           if(  property_exists( $authObj, 'refresh_token' ) ) {
             // refresh token present -> ok, it's the first authorization grant
