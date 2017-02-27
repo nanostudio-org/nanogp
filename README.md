@@ -30,13 +30,13 @@ Settings are defined in `admin/config.php`:
   
 `cfg_client_id` and `cfg_client_secret` can be obtained from the Google developers console.  
   
-## Enable Google API  
+## Enable Google API - Google developers console
   
 Create and configure a new projet.  
   
 1) Open page: https://console.developers.google.com  
   
-2) Create a new project named `nanogallery2gp_YOUR_INSTANCE_NAME` (the project name should be unique, so replace YOUR_INSTANCE_NAME with the name of your own instance)
+2) Create a new project named `nanogallery2gp_<b>YOUR_INSTANCE_NAME</b>` (the project name should be unique, so replace YOUR_INSTANCE_NAME with the name of your own instance)
   
 <img src="img/google_api_console1.jpg?raw=true" alt="step 1" style="max-width:400px;"/>
   
