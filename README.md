@@ -1,6 +1,6 @@
 # nanogp
 
-Allows <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b> to access Google Photos content.  
+Allows <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b> to access **Google Photos** content.  
 
 Since february 9, 2017, Google Photos can no more be accessed without account owner's explicit authorization.
 Permanent authorization is only possible for server side applications.
@@ -83,6 +83,7 @@ For example, with `deny from all` set in `.htaccess` file.
   
 ## OAuth2
 More about OAuth2: https://developers.google.com/identity/protocols/OAuth2WebServer  
+  
 To manually revoke authorization:
 - delete the folder corresponding to the user in `admin/users`
 - delete application's authorization: https://myaccount.google.com/permissions
