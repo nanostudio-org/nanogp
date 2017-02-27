@@ -13,11 +13,14 @@ Web server with PHP version > 5.2
 Cannot be run on `localhost` (workaround, use `http://lvh.me` instead)  
 
 
-## Installation  
+## Installation procedure  
 
 - Create a folder named `nanogp` on your web server.
 - Copy the content of the `dist` folder in this folder.
   
+## Upgrade procedure  
+Copy the content of the `dist` folder to your server, but **never overwrite** the `tools.php` file.  
+If you overwrite it, you'll need to set the configuration again.  
   
 ## Configuration  
 
@@ -80,7 +83,7 @@ Use a browser to open the `authorize.php` page: `http://your_webserver/nanogp/au
 The `admin` folder should only be accessible to your PHP applications.  
 For example, with `deny from all` set in `.htaccess` file.
 
-  
+
 ## OAuth2
 More about OAuth2: https://developers.google.com/identity/protocols/OAuth2WebServer  
   
