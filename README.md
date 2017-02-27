@@ -26,7 +26,6 @@ Settings are defined in `admin/config.php`:
 ```
   $cfg_client_id = 'yyy';
   $cfg_client_secret = 'zzz';
-  $cfg_application_name = 'nanogallery2gp';
 ```
   
 `cfg_client_id` and `cfg_client_secret` can be obtained from the Google developers console.  
@@ -37,7 +36,7 @@ Create and configure a new projet.
   
 1) Open page: https://console.developers.google.com  
   
-2) Create a new project named `nanogallery2gp`  
+2) Create a new project named `nanogallery2gp_YOUR_INSTANCE_NAME` (the project name should be unique, so replace YOUR_INSTANCE_NAME with the name of your own instance)
   
 <img src="img/google_api_console1.jpg?raw=true" alt="step 1" style="max-width:400px;"/>
   
@@ -47,7 +46,7 @@ Create and configure a new projet.
   
 Select your email address  
   
-Define the "product namaeshown to user": "nanogallery2gp"  
+Define the "product namaeshown to user": "nanogallery2gp_YOUR_INSTANCE_NAME"  
   
 Others fields are optional  
   
@@ -58,7 +57,7 @@ Others fields are optional
 <img src="img/google_api_console4.jpg?raw=true" alt="step 4" style="max-width:400px;"/>
   
 Application type: "Web application"  
-Name: "nanogallery2gp"  
+Name: "nanogallery2gp_YOUR_INSTANCE_NAME"  
 
 Define the authorized redirect URLs: enter the full path to your `autorize.php`  
   
@@ -83,4 +82,7 @@ For example, with `deny from all` set in `.htaccess` file.
 
   
 ## OAuth2
-More about OAuth2: https://developers.google.com/identity/protocols/OAuth2WebServer
+More about OAuth2: https://developers.google.com/identity/protocols/OAuth2WebServer  
+To manually revoke authorization:
+- delete the folder corresponding to the user in `admin/users`
+- delete application's authorization: https://myaccount.google.com/permissions
