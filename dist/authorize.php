@@ -4,7 +4,7 @@
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.2.3
+* @version    1.2.4
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
@@ -134,7 +134,7 @@
           // we got the user ID
           $user_id = $objProfile -> id;
           
-          if( $user_id = '' ) {
+          if( $user_id == '' ) {
             response_json( array('nano_status' => 'error', 'nano_message' => 'Retrieved user ID is empty.' ) );
             exit;
           }
@@ -157,11 +157,11 @@
             }
             
             // echo 'Authorisation successfully granted.' . PHP_EOL . '<br/>';
-            response_json( array('nano_status' => 'ok', 'nano_message' => 'Authorisation successfully granted.' ) );
+            response_json( array('nano_status' => 'ok', 'nano_message' => 'Authorisation successfully granted (userID='.$user_id.').' ) );
           }
           else {
             // no refresh token -> authorization has already been granted -> revoke to get a new refresh token
-            response_json( array('nano_status' => 'warning', 'nano_message' => 'Authorization already granted. To revoke authorization: https://myaccount.google.com/permissions' ) );
+            response_json( array('nano_status' => 'warning', 'nano_message' => 'Authorization already granted. Please revoke authorization first: https://myaccount.google.com/permissions' ) );
           }
         }
         else {
@@ -196,13 +196,13 @@
     }
     
     if( !is_dir( 'admin/users/' . $user_id ) ) {
-      response_json( array('nano_status' => 'error', 'nano_message' => 'user ID does not exist') );
+      response_json( array('nano_status' => 'error', 'nano_message' => 'user ID does not exist (userID='.$user_id.')') );
       exit;
     }
 
     $atoken=file_get_contents( 'admin/users/' . $user_id . '/token_a.txt');
     if( $atoken === false || $atoken == '' ) {
-      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find any access token') );
+      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find any access token (userID='.$user_id.')') );
       exit;
     }
     
@@ -238,11 +238,11 @@
     if( $info['http_code'] === 200) {
       array_map('unlink', glob('admin/users/' . $user_id . "/*.*"));
       rmdir('admin/users/' . $user_id);
-      response_json( array('nano_status' => 'ok', 'nano_message' => 'authorisation revoked successfully') );
+      response_json( array('nano_status' => 'ok', 'nano_message' => 'authorisation revoked successfully (userID='.$user_id.').') );
       exit;
     } 
     
-    response_json( array('nano_status' => 'error', 'nano_message' => 'Error : '. $info['http_code'] . '-' . $ce ) );
+    response_json( array('nano_status' => 'error', 'nano_message' => 'Error (userID='.$user_id.'): '. $info['http_code'] . '-' . $ce ) );
     exit;
   }
   
@@ -264,17 +264,17 @@
 
     $atoken=file_get_contents( 'admin/users/' . $user_id . '/token_a.txt');
     if( $atoken === false || $atoken == '' ) {
-      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find access token') );
+      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find access token (userID='.$user_id.')') );
       exit;
     }    
     
     $rtoken=file_get_contents( 'admin/users/' . $user_id . '/token_r.txt');
     if( $rtoken === false || $rtoken == '' ) {
-      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find refresh token') );
+      response_json( array('nano_status' => 'error', 'nano_message' => 'could not find refresh token (userID='.$user_id.')') );
       exit;
     }    
     
-    response_json( array('nano_status' => 'ok', 'nano_message' => 'authorization already granted') );
+    response_json( array('nano_status' => 'ok', 'nano_message' => 'authorization already granted (userID='.$user_id.')') );
   }
 
   
