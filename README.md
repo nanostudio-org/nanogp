@@ -62,7 +62,7 @@ Others fields are optional
 Application type: "Web application"  
 Name: **"nanogallery2gp-YOUR-INSTANCE-NAME"**  
 
-Define the authorized redirect URLs: enter the full path to your `autorize.php`  
+Define the authorized redirect URLs: enter the full path to your `authorize.php`  
   
 <img src="img/google_api_console5.jpg?raw=true" alt="step 5" style="max-width:400px;"/>
   
