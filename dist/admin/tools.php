@@ -57,7 +57,7 @@
  		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
  		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
  		curl_setopt($ch, CURLOPT_VERBOSE, true);
- 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+ 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
  		$response = curl_exec ($ch);
  		$authObj=json_decode($response);
     $msg=curl_error($ch);
