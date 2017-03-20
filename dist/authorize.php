@@ -78,7 +78,7 @@
       "scope" =>          "https://picasaweb.google.com/data profile email"
     );
 
-    $request_to = OAUTH2_AUTH_URL . '?' . http_build_query($params);
+    $request_to = OAUTH2_AUTH_URL . '?' . http_build_query($params, '', '&');
 
     header("Location: " . $request_to);     // display authorization form
   }
@@ -103,7 +103,7 @@
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_VERBOSE, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
     $response = curl_exec($ch);
     $authObj = json_decode($response);
     $info = curl_getinfo($ch);
