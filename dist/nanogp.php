@@ -4,7 +4,7 @@
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.2.1
+* @version    1.2.5
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
