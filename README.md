@@ -7,8 +7,13 @@ Permanent authorization is only possible for server side applications.
 
 <b>nanogp</b> is a PHP application which delivers Google Photos content to <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b>.
   
-<span style="color:#d00">WARNING: please use NANOGP only with Google Photos accounts withoout personal/privat data. All your albums becomes public to NANOGP.</span>.
-  
+```diff
+- --> WARNING: please use NANOGP only with a Google Photos account which does not contain any personal or privat data.
+- All your photos albums can be accessed by NANOGP. This may be used by malicious people.
+- 
+- --> ### SO, USE A DEDICATED GOOGLE PHOTOS ACCOUNT. ###
+```
+
   
 ## Pre-requisites:
 Web server with PHP version > 5.2  
