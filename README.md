@@ -1,13 +1,15 @@
 # nanogp
 
-Allows <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b> to access **Google Photos** content.  
+Add-on for <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b> to access **Google Photos** content.  
 
 Since february 9, 2017, Google Photos can no more be accessed without account owner's explicit authorization.
 Permanent authorization is only possible for server side applications.
 
-<b>nanogp</b> is a PHP application which delivers Google Photos content to nanogallery2 on your web pages.
-
-
+<b>nanogp</b> is a PHP application which delivers Google Photos content to <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b>.
+  
+<span style="color:#d00">WARNING: please use NANOGP only with Google Photos accounts withoout personal/privat data. All your albums becomes public to NANOGP.</span>.
+  
+  
 ## Pre-requisites:
 Web server with PHP version > 5.2  
 Cannot be run on `localhost` (workaround, use `http://lvh.me` instead)  
