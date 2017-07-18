@@ -9,9 +9,11 @@ Permanent authorization is only possible for server side applications.
   
 ```diff
 - --> WARNING: please use NANOGP only with a Google Photos account which does not contain any personal or privat data.
-- All your photos albums can be accessed by NANOGP. This may be used by malicious people.
+- All your photos albums can be accessed by NANOGP. This may be misused by malicious people.
 - 
 - --> ### SO, USE A DEDICATED GOOGLE PHOTOS ACCOUNT. ###
+- 
+- set the option `$albums_filter` to protect your privacy!
 ```
 
   
@@ -34,11 +36,14 @@ If you overwrite it, you'll need to set the configuration again.
 Settings are defined in `admin/config.php`:
   
 ```
-  $cfg_client_id = 'yyy';
+  $cfg_client_id     = 'yyy';
   $cfg_client_secret = 'zzz';
+  $albums_filter     = ['sauvegarde', 'backup'];
 ```
   
-`cfg_client_id` and `cfg_client_secret` can be obtained from the Google developers console.  
+`$cfg_client_id` and `$cfg_client_secret` can be obtained from the Google developers console.  
+`$albums_filter` is used to filter albums out. Albums with a title containing one of the string will not be displayed.
+  
   
 ## Enable Google API - Google developers console
   
