@@ -1,10 +1,10 @@
 <?php
 /**
-* nanogp add-on for nanogallery2 to display images/albums stored in Google Photos
+* nanogp add-on for nanogallery2 to display Google Photos images/albums
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.2.5
+* @version    1.3.0
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3

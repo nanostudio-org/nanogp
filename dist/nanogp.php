@@ -1,10 +1,10 @@
 <?php
 /**
-* nanogp add-on for nanogallery2 to display images/albums stored in Google Photos
+* nanogp add-on for nanogallery2 to display Google Photos images/albums
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.2.5
+* @version    1.3.0
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
@@ -61,11 +61,11 @@
     $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id;
     // echo $url . PHP_EOL . '<br/>';    
 
-    if( send_gprequest( $url ) === 'token_expired') {
+    if( send_gprequest( $url, 'album' ) === 'token_expired') {
       // error -> get a new access token
       get_new_access_token();
       // send request again, with the new access token
-      send_gprequest( $url );
+      send_gprequest( $url, 'album' );
     }
   }
   
@@ -73,17 +73,17 @@
   if( $content_kind == 'photo' ) {
     $url = 'https://picasaweb.google.com/data/feed/api/user/' . $user_id . '/albumid/' . $album_id;
 
-    if( send_gprequest( $url ) === 'token_expired') {
+    if( send_gprequest( $url, 'photo' ) === 'token_expired') {
       // error -> get a new access token
       get_new_access_token();
       // send request again, with the new access token
-      send_gprequest( $url );
+      send_gprequest( $url, 'photo' );
     }
   }
   
   
   // ##### send the request to picasa/google photos
-  function send_gprequest( $url ) {
+  function send_gprequest( $url, $content_kind ) {
     global $callback, $atoken, $request;
 
     $request['access_token']=$atoken;
@@ -117,7 +117,26 @@
     }
     
     if( $info['http_code'] === 200 ) {
-      response_json( array_merge(array('nano_status' => 'ok', 'nano_message' => ''), json_decode($response, true)) );
+      // OK, send result to nanogallery2
+      if( $content_kind == 'photo' ) {
+        response_json( array_merge(array('nano_status' => 'ok', 'nano_message' => ''), json_decode($response, true)) );
+      }
+      else {
+        // filter albums
+        $data=json_decode($response, true);
+        $i=0;
+        global $albums_filter;
+        foreach($data['feed']['entry'] as $item) {
+          $value = $item['title']['$t'];
+          foreach( $albums_filter as $one_filter ) {
+            if (stripos($value, $one_filter) !== false) {
+              unset($data['feed']['entry'][$i]);
+            }
+          }
+          $i++;
+        }
+        response_json( array_merge(array('nano_status' => 'ok', 'nano_message' => ''), $data) );
+      }
       exit;
     }
     else {
