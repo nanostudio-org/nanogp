@@ -13,7 +13,7 @@ Permanent authorization is only possible for server side applications.
 - 
 - --> ### SO, USE A DEDICATED GOOGLE PHOTOS ACCOUNT. ###
 - 
-- set the option `$albums_filter` to protect your privacy!
+- configure the option `$albums_filter` to protect your privacy!
 ```
 
   
