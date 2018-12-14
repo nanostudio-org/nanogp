@@ -16,6 +16,10 @@ Permanent authorization is only possible for server side applications.
 - configure the option `$albums_filter` to protect your privacy!
 ```
 
+## WARNING
+THIS SCRIPT IS PUBLISHED AS IS. GOOGLE CONTINUOUSLY CHANGES HIS CONFIGURATUION INTERFACE, AND IT'S IMPOSSIBLE TO REFLECT ALL CHANGES ON THIS PAGE.  
+  
+  
   
 ## Pre-requisites:
 Web server with PHP version > 5.2  
