@@ -7,6 +7,15 @@ Permanent authorization is only possible for server side applications.
 
 <b>nanogp</b> is a PHP application which delivers Google Photos content to <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b>.
   
+   
+---  
+<b>Picasa API Deprecation</b>  
+To activate the extension period, between January 2019 and March 2019, please install <b>nanogp V1.3.1</b>   
+more : https://developers.google.com/picasa-web/docs/3.0/deprecation
+  
+---  
+  
+
 ```diff
 - --> WARNING: please use NANOGP only with a Google Photos account which does not contain any personal or privat data.
 - All your photos albums can be accessed by NANOGP. This may be misused by malicious people.
