@@ -4,7 +4,7 @@
 * http://nanogallery2.nanostudio.org
 *
 * PHP 5.2+
-* @version    1.3.0
+* @version    1.3.1
 * @author     Christophe Brisbois - http://www.brisbois.fr/
 * @copyright  Copyright 2017
 * @license    GPLv3
@@ -87,6 +87,7 @@
     global $callback, $atoken, $request;
 
     $request['access_token']=$atoken;
+    $request['deprecation-extension'] = 'true' ;
     
     $ch = curl_init();
     $url = $url . '?' . http_build_query($request, '', '&');
