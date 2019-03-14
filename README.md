@@ -1,4 +1,4 @@
-# nanogp
+# nanogp - depreciated - please upgrade to [nanogp2](https://github.com/nanostudio-org/nanogp2)
 
 Add-on for <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b> to access **Google Photos** content.  
 
@@ -10,8 +10,9 @@ Permanent authorization is only possible for server side applications.
    
 ---  
 <b>Picasa API Deprecation</b>  
-To activate the extension period, between January 2019 and March 2019, please install <b>nanogp V1.3.1</b>   
-more : https://developers.google.com/picasa-web/docs/3.0/deprecation
+- To activate the extension period, between January 2019 and March 2019, please install <b>nanogp V1.3.1</b>   
+- **After March 2019, upgrade to [nanogp2](https://github.com/nanostudio-org/nanogp2)**  
+- More: https://developers.google.com/picasa-web/docs/3.0/deprecation
   
 ---  
   
