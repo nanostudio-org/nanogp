@@ -1,4 +1,4 @@
-# nanogp - depreciated - please upgrade to [nanogp2](https://github.com/nanostudio-org/nanogp2)
+# nanogp - DEPRECIATED - please upgrade to [nanogp2](https://github.com/nanostudio-org/nanogp2)
 
 Add-on for <b>[nanogallery2](https://github.com/nanostudio-org/nanogallery2)</b> to access **Google Photos** content.  
 
